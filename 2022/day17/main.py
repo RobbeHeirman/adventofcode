@@ -28,10 +28,15 @@ class Grid:
     def _create_rows_for_rock(rock_height):
         def inner_decorator(function):
             @functools.wraps(function)
-            def wrapper(self, *args, **kwargs):
+            def wrapper(self: "Grid", *args, **kwargs):
                 highest_row = self._find_highest_row()
                 extra_rows = (self.EXTRA_SPAWN_HEIGHT - highest_row) + rock_height
-                self.grid.extend([[self.EMPTY_SYMBOL for _ in range(self.width)] for _ in range(extra_rows)])
+                if extra_rows > 0:
+                    self.grid.extend([[self.EMPTY_SYMBOL for _ in range(self.width)] for _ in range(extra_rows)])
+                if extra_rows < 0:
+                    for _ in range(abs(extra_rows)):
+                        self.grid.pop()
+
                 return function(self, *args, **kwargs)
 
             return wrapper
@@ -45,17 +50,19 @@ class Grid:
         return len(self.grid)
 
     def create_rock_at_cell(self, row_index: int, col_index: int):
-        self.active_cells.add((row_index, col_index))
+        self.active_cells.add((col_index, row_index))
         self[row_index][col_index] = self.ROCK_SYMBOL
         return self
 
     def _create_horizontal_line(self, row_index: int, length=3) -> "Grid":
         for i in range(self.SIDE_OFFSET, self.SIDE_OFFSET + length):
-            return self.create_rock_at_cell(row_index, i)
+            self.create_rock_at_cell(row_index, i)
+        return self
 
-    def _create_vertical_line(self, col_index: int, height=3):
+    def _create_vertical_line(self, col_index: int, height=3) -> "Grid":
         for i in range(height):
-            return self.create_rock_at_cell(i, col_index)
+            self.create_rock_at_cell(i, col_index)
+        return self
 
     @_create_rows_for_rock(rock_height=1)
     def spawn_minus_rock(self) -> "Grid":
@@ -83,7 +90,7 @@ class Grid:
     def spawn_rock(self, rocks_spawned: int):
         spawners = [self.spawn_minus_rock, self.spawn_plus_rock, self.spawn_reverse_l, self.spawn_vertical_rock,
                     self.spawn_block_rock]
-
+        self.active_cells = set()
         return spawners[rocks_spawned % len(spawners)]()
 
     def can_move_rock_down(self) -> bool:
@@ -92,7 +99,7 @@ class Grid:
 
         for cell in self.active_cells:
             x, y = cell
-            if y == len(self) - 1 or (self[x][y + 1] == self.ROCK_SYMBOL and (x, y + 1) not in self.active_cells):
+            if y == len(self) - 1 or (self[y + 1][x] == self.ROCK_SYMBOL and (x, y + 1) not in self.active_cells):
                 return False
 
         return True
@@ -100,40 +107,68 @@ class Grid:
     def can_move_rock_sideways(self, right: int) -> bool:
         for cell in self.active_cells:
             x, y = cell
-            if self.width <= x + right < 0 or (
-                    self[x][y + right] == self.ROCK_SYMBOL and (x, y + right) not in self.active_cells):
+            if self.width <= x + right or x + right < 0:
                 return False
+            if self[y][x + right] == self.ROCK_SYMBOL and (x + right, y) not in self.active_cells:
+                return False
+        return True
 
     def move_active_rock(self, direction: tuple[int, int]) -> bool:
-        if not self.can_move_rock_down():
+        if direction[1] == 1 and not self.can_move_rock_down():
+            return False
+
+        if direction[0] != 0 and not self.can_move_rock_sideways(direction[0]):
             return False
 
         right, down = direction
         new_active_cells = set()
         for cell in self.active_cells:
             x, y = cell
-            new_x, new_y = (x + down, y + right)
-            self[x][y] = self.EMPTY_SYMBOL
-            self[new_x][new_y] = self.ROCK_SYMBOL
+            new_x, new_y = (x + right, y + down)
+            if (x, y) not in new_active_cells:
+                self[y][x] = self.EMPTY_SYMBOL
+            self[new_y][new_x] = self.ROCK_SYMBOL
             new_active_cells.add((new_x, new_y))
         self.active_cells = new_active_cells
         return True
 
+    def get_top_row_indices(self):
+        ret = [None for _ in range(self.width)]
+        row_index = 0
+
+        while len(ret) != self.width:
+            if row_index == len(self):
+                for i in range(len(ret)):
+                    if ret[i] is None:
+                        ret[i] = len(self)
+
     def solve(self, jetstream: str, rocks: int) -> int:
         jet_index = 0
         rock_spawn_counter = 0
-        while rock_spawn_counter <= rocks:
+        resting_states = {}
+        while rock_spawn_counter + 1 < rocks:
             if not self.can_move_rock_down():
                 self.spawn_rock(rock_spawn_counter)
                 rock_spawn_counter += 1
-                print(self.grid)
+                print(rock_spawn_counter // rocks)
+                # print("spawn")
+                # print(self)
+            else:
+                self.move_active_rock((0, 1))
+                # print('v')
+                # print(self)
+
             curr_jet = jetstream[jet_index % len(jetstream)]
             right = -1 if curr_jet == "<" else 1 if curr_jet == ">" else 0
             if right == 0:
                 continue
-
-            self.move_active_rock((0, 1))
             self.move_active_rock((right, 0))
+            # print(jetstream[jet_index % len(jetstream)])
+            # print(self)
+            jet_index += 1
+
+
+
 
 
         return len(self.grid)
@@ -143,6 +178,9 @@ def main():
     grid = Grid()
     with open('input.txt') as f:
         jetstream = f.read().rstrip()
+    # grid.spawn_minus_rock()
+    # print(grid)
+    print(grid.solve(jetstream, 1000000000000))
 
-    print(grid.solve(jetstream, 2022))
+
 main()
