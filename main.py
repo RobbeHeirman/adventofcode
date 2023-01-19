@@ -1,11 +1,6 @@
 import re
 
 
-def file_to_set(file):
-    with open(file) as f:
-        return set(int(val.strip()) for val in f.readlines())
-
-
 def file_to_password_list(file):
     with open(file) as f:
         return [Password.string_init(line.strip()) for line in f.readlines()]
@@ -24,21 +19,6 @@ def file_to_passport(file):
     with open(file) as f:
         passport_lines = f.read().split('\n\n')
         return [Passport(line) for line in passport_lines]
-
-
-def day_1(total: int) -> int:
-    input_set = file_to_set('input_day1.txt')
-    result = input_set & set(total - val for val in input_set)
-    return result.pop() * result.pop()
-
-
-def day_1_2(total):
-    input_set = file_to_set('input_day1_2.txt')
-    for count_outer, val_outer in enumerate(input_set):
-        for _, val_inner in enumerate(input_set, start=count_outer + 1):
-            val_calc = total - val_outer - val_inner
-            if val_calc in input_set:
-                return val_outer * val_inner * val_calc
 
 
 def day_2():
@@ -146,15 +126,3 @@ class Passport:
         return len(self._data['pid'] == 9) and self._data['pid'].isdigit()
 
 
-if __name__ == '__main__':
-    # NUM = 2020
-    # # print(day_1(NUM))
-    # # print(day_1_2(NUM))
-    # # print(day_2())
-    # print(day_2_2())
-    # print(day_3(1, 2))
-    # print(day_3(1, 1) * day_3(3, 1) * day_3(5, 1) * day_3(7, 1) * day_3(1, 2))
-    # print(1 % 1)
-    # print(1 % 2)
-    # print(day_4())
-    print(int('bla'))
