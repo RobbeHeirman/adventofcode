@@ -1,28 +1,48 @@
-def file_to_set(file):
-    with open(file) as f:
-        return set(int(val.strip()) for val in f.readlines())
+def find_shared_article(input_: str) -> str:
+    rucksack1 = input_[:len(input_) // 2]
+    rucksack2 = input_[len(input_) // 2:]
+
+    rucksack1 = set(rucksack1)
+    rucksack2 = set(rucksack2)
+
+    intersect = rucksack1.intersection(rucksack2)
+    return intersect.pop()
 
 
-def day_1(total: int) -> int:
-    input_set = file_to_set('input_day1.txt')
-    result = input_set & set(total - val for val in input_set)
-    return result.pop() * result.pop()
+def find_badge(rucksack1: str, rucksack2: str, rucksack3: str) -> str:
+    set1 = set(rucksack1)
+    set2 = set(rucksack2)
+    set3 = set(rucksack3)
+
+    inters1 = set1.intersection(set2)
+    inters2 = inters1.intersection(set3)
+    return inters2.pop()
 
 
-def day_1_2(total):
-    input_set = file_to_set('input_day1_2.txt')
-    for count_outer, val_outer in enumerate(input_set):
-        for _, val_inner in enumerate(input_set, start=count_outer + 1):
-            val_calc = total - val_outer - val_inner
-            if val_calc in input_set:
-                return val_outer * val_inner * val_calc
+def find_prio_value(char: str) -> int:
+    if char.islower():
+        return ord(char) - ord("a") + 1
+    return ord(char) - ord("A") + 27
 
 
-def main():
-    NUM = 2020
-    print(day_1(NUM))
-    print(day_1_2(NUM))
+def day1_1() -> int:
+    with open("input.txt") as f:
+        return sum([find_prio_value(find_shared_article(line)) for line in f])
+
+
+def day1_2() -> int:
+    with open('input.txt') as f:
+        group_lst = []
+        sum_ = 0
+        for line in f.readlines():
+            group_lst.append(line[:-1])
+            if len(group_lst) == 3:
+                badge = find_badge(*group_lst)
+                sum_ += find_prio_value(badge)
+                group_lst = []
+
+        return sum_
 
 
 if __name__ == '__main__':
-    main()
+    print(day1_2())
