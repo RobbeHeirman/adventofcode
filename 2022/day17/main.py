@@ -133,24 +133,48 @@ class Grid:
         return True
 
     def get_top_row_indices(self):
+        if not len(self):
+            return [0 for i in range(self.width)]
+
         ret = [None for _ in range(self.width)]
         row_index = 0
 
-        while len(ret) != self.width:
+        while ret.count(None):
             if row_index == len(self):
                 for i in range(len(ret)):
                     if ret[i] is None:
                         ret[i] = len(self)
+                return ret
+
+            row = self[row_index]
+            for i, val in enumerate(ret):
+                if val == None and row[i] == self.ROCK_SYMBOL:
+                    ret[i] = row_index
+
+            row_index += 1
+
+        return ret
 
     def solve(self, jetstream: str, rocks: int) -> int:
         jet_index = 0
         rock_spawn_counter = 0
-        resting_states = {}
+        states = set()
+        extra_length = 0
         while rock_spawn_counter + 1 < rocks:
             if not self.can_move_rock_down():
+                indices = self.get_top_row_indices()
+                indices.append(jet_index % len(jetstream))
+                indices.append(rock_spawn_counter % 5)
+                indices = tuple(indices)
+
+                if indices in states:
+                    current_height = len(self)
+                    fits_in = rocks // rock_spawn_counter
+                    rock_spawn_counter *= fits_in
+                    extra_length += fits_in * current_height
+                states.add(indices)
                 self.spawn_rock(rock_spawn_counter)
                 rock_spawn_counter += 1
-                print(rock_spawn_counter // rocks)
                 # print("spawn")
                 # print(self)
             else:
@@ -167,18 +191,13 @@ class Grid:
             # print(self)
             jet_index += 1
 
-
-
-
-
-        return len(self.grid)
+        return len(self.grid) + extra_length
 
 
 def main():
     grid = Grid()
-    with open('input.txt') as f:
+    with open('input2.txt') as f:
         jetstream = f.read().rstrip()
-    # grid.spawn_minus_rock()
     # print(grid)
     print(grid.solve(jetstream, 1000000000000))
 
