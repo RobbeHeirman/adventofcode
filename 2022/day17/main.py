@@ -181,8 +181,6 @@ class Grid:
                     reps_in_rocks_to_fall = rocks_to_fall // qty_rocks_in_rep
                     rock_spawn_counter = qty_rocks_in_rep * reps_in_rocks_to_fall + rock_count[indices]
                     extra_length += reps_in_rocks_to_fall * repetition_length - repetition_length
-                    print(extra_length, " ", rock_spawn_counter)
-                    # extra_length += repetition_height * (current_height - height_count[indices])
                 else:
                     states.add(indices)
                     rock_count[indices] = rock_spawn_counter
