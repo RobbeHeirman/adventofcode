@@ -22,7 +22,12 @@ class Grid:
         return reversed(self.grid)
 
     def __len__(self):
-        return len(self.grid)
+        empty_spaces = 0
+        for row in self:
+            if row.count(self.ROCK_SYMBOL):
+                break
+            empty_spaces += 1
+        return len(self.grid) - empty_spaces
 
     @staticmethod
     def _create_rows_for_rock(rock_height):
@@ -99,7 +104,7 @@ class Grid:
 
         for cell in self.active_cells:
             x, y = cell
-            if y == len(self) - 1 or (self[y + 1][x] == self.ROCK_SYMBOL and (x, y + 1) not in self.active_cells):
+            if y == len(self.grid) - 1 or (self[y + 1][x] == self.ROCK_SYMBOL and (x, y + 1) not in self.active_cells):
                 return False
 
         return True
@@ -134,45 +139,55 @@ class Grid:
 
     def get_top_row_indices(self):
         if not len(self):
-            return [0 for i in range(self.width)]
+            return [0 for _ in range(self.width)]
 
-        ret = [None for _ in range(self.width)]
+        end_condition = 2 ** self.width - 1
+        top_rock_found = 0
+
+        ret = []
         row_index = 0
 
-        while ret.count(None):
+        while end_condition != top_rock_found:
             if row_index == len(self):
-                for i in range(len(ret)):
-                    if ret[i] is None:
-                        ret[i] = len(self)
                 return ret
-
             row = self[row_index]
-            for i, val in enumerate(ret):
-                if val == None and row[i] == self.ROCK_SYMBOL:
-                    ret[i] = row_index
-
+            bit_row = sum([(row[i] == self.ROCK_SYMBOL) << i for i in range(len(row))])
+            ret.append(bit_row)
+            top_rock_found = top_rock_found | bit_row
             row_index += 1
-
         return ret
 
     def solve(self, jetstream: str, rocks: int) -> int:
         jet_index = 0
         rock_spawn_counter = 0
         states = set()
+        rock_count = {}
+        height_count = {}
         extra_length = 0
-        while rock_spawn_counter + 1 < rocks:
+        while True:
             if not self.can_move_rock_down():
+                if rock_spawn_counter == rocks:
+                    return len(self) + extra_length
+
                 indices = self.get_top_row_indices()
                 indices.append(jet_index % len(jetstream))
                 indices.append(rock_spawn_counter % 5)
                 indices = tuple(indices)
 
                 if indices in states:
-                    current_height = len(self)
-                    fits_in = rocks // rock_spawn_counter
-                    rock_spawn_counter *= fits_in
-                    extra_length += fits_in * current_height
-                states.add(indices)
+                    qty_rocks_in_rep = rock_spawn_counter - rock_count[indices]
+                    repetition_length = len(self) - height_count[indices]
+                    rocks_to_fall = rocks - rock_count[indices]
+                    reps_in_rocks_to_fall = rocks_to_fall // qty_rocks_in_rep
+                    rock_spawn_counter = qty_rocks_in_rep * reps_in_rocks_to_fall + rock_count[indices]
+                    extra_length += reps_in_rocks_to_fall * repetition_length - repetition_length
+                    print(extra_length, " ", rock_spawn_counter)
+                    # extra_length += repetition_height * (current_height - height_count[indices])
+                else:
+                    states.add(indices)
+                    rock_count[indices] = rock_spawn_counter
+                    height_count[indices] = len(self)
+
                 self.spawn_rock(rock_spawn_counter)
                 rock_spawn_counter += 1
                 # print("spawn")
@@ -187,18 +202,17 @@ class Grid:
             if right == 0:
                 continue
             self.move_active_rock((right, 0))
-            # print(jetstream[jet_index % len(jetstream)])
-            # print(self)
             jet_index += 1
 
         return len(self.grid) + extra_length
 
 
 def main():
+    pass
     grid = Grid()
-    with open('input2.txt') as f:
+    with open('input.txt') as f:
         jetstream = f.read().rstrip()
-    # print(grid)
+    grid.get_top_row_indices()
     print(grid.solve(jetstream, 1000000000000))
 
 
