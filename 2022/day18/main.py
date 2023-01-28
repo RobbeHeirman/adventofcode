@@ -1,5 +1,11 @@
 import dataclasses
+import enum
 import itertools
+
+
+class CubeType(enum.Enum):
+    LAVA = enum.auto()
+    AIR = enum.auto()
 
 
 @dataclasses.dataclass(unsafe_hash=False)
@@ -7,6 +13,8 @@ class Cube:
     x: int
     y: int
     z: int
+    type: CubeType = CubeType.LAVA
+    is_trapped: bool = False
     uncovered: int = 6
 
     def __hash__(self):
@@ -41,6 +49,60 @@ def main():
 
         for set_ in sets:
             set_.add(cube)
+
+    max_x = max(x_dict.keys())
+    max_y = max(y_dict.keys())
+    max_z = max(z_dict.keys())
+
+    air_cubes = set()
+
+    def recursive_is_trapped_check(cube: Cube, checked_cubes) -> bool:
+        if cube.type == CubeType.LAVA:
+            cube.is_trapped = True
+            return True
+
+        dimensions = [cube.x, cube.y, cube.z]
+        if min(dimensions) == 0 or dimensions[0] == max_x or dimensions[1] == max_y or dimensions[2] == max_z:
+            cube.is_trapped = False
+            return False
+
+        trap_check = []
+        for i in range(len(dimensions)):
+            for direction in [-1, 1]:
+                dimensions[i] += direction
+                nx, ny, nz = dimensions
+
+                location = x_dict.setdefault(nx, set()) \
+                    .intersection(y_dict.setdefault(ny, set())) \
+                    .intersection(z_dict.setdefault(nz, set()))
+                if location:
+                    location = location.pop()
+                else:
+                    location = Cube(nx, ny, nz, type=CubeType.AIR)
+                    air_cubes.add(location)
+
+                if location not in checked_cubes:
+                    checked_cubes.add(location)
+                    recursive_is_trapped_check(location, checked_cubes)
+
+                trap_check.append(location.is_trapped)
+
+        cube.is_trapped = bool(min(trap_check))
+        return cube.is_trapped
+
+    for cube in cubes:
+        checked_cubes = set()
+        dimensions = [cube.x, cube.y, cube.z]
+        for i in range(len(dimensions)):
+            for direction in [-1, 1]:
+                dimensions[i] += direction
+                nx, ny, nz = dimensions
+                location = x_dict.setdefault(nx, set()) \
+                    .intersection(y_dict.setdefault(ny, set())) \
+                    .intersection(z_dict.setdefault(nz, set()))
+
+                location = location.pop() if location else Cube(nx, ny, nz, type=CubeType.AIR)
+                recursive_is_trapped_check(location, checked_cubes)
 
     return sum(cube.uncovered for cube in cubes)
 
