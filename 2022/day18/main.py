@@ -24,6 +24,34 @@ class Cube:
         return self.x + self.y + self.z
 
 
+class Grid:
+    def __init__(self):
+        self._x_dict = {}
+        self._y_dict = {}
+        self._z_dict = {}
+
+    def add_cube(self, cube: Cube):
+        self._x_dict.setdefault(cube.x, set()).add(cube)
+        self._y_dict.setdefault(cube.y, set()).add(cube)
+        self._z_dict.setdefault(cube.z, set()).add(cube)
+
+    def get_cube_at_location(self, x, y, z):
+        if remainder := self._x_dict.setdefault(x, set()) \
+                .intersection(self._y_dict.setdefault(y, set())) \
+                .intersection(self._z_dict.setdefault(z, set())):
+            return next(iter(remainder))
+
+        cube = Cube(z, y, z, CubeType.AIR)
+        self.add_cube(cube)
+        return cube
+
+    def get_neighbors(self, cube: Cube):
+
+        for dicts in itertools.combinations([self._x_dict, self._y_dict, self._z_dict], 2):
+            set1, set2 = dicts
+            candidate_neighbors = set1.intersection(set2)
+
+
 def parse_input(filename: str) -> list[Cube]:
     with open(filename) as f:
         return [Cube(*[int(i) for i in line.split(',')]) for line in f.read().splitlines()]
