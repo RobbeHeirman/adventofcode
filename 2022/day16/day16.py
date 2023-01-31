@@ -14,7 +14,6 @@ def solve(puzzle):
     indicies = {valve: 1 << i for i, valve in enumerate(flows)}
     distances = {(v, l): 1 if l in graph[v] else 1000 for l in graph for v in graph}
 
-    # floyd-warshall = Distance for any possible pair of valves
     for k, i, j in itertools.permutations(graph, 3):
         distances[i, j] = min(distances[i, j], distances[i, k] + distances[k, j])
 
