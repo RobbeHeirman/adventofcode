@@ -15,10 +15,13 @@ class SolutionMeta(Generic[T], ABCMeta):
         - Run script of class or import somewhere.
 
     """
-    def __new__(cls, name, bases, *args, **kwargs):
-        c = super().__new__(cls, name, bases, *args, **kwargs)
+
+    __filename__ = 'input.txt'
+
+    def __new__(mcs, name, bases, *args, **kwargs):
+        c = super().__new__(mcs, name, bases, *args, **kwargs)
         if bases:
-            cls._print_solution(c)
+            mcs._print_solution(c)
         return c
 
     def _print_solution(cls: "SolutionMeta"):
@@ -26,9 +29,14 @@ class SolutionMeta(Generic[T], ABCMeta):
             "1": cls.solution1,
             "2": cls.solution2
         }
-        inp = cls.read_input()
+        lines = cls.read_file()
+        inp = cls.read_input(lines)
         for key, val in solvers.items():
             print(f"Solution for {cls.__name__}, part {key} is {val(inp)}")
+
+    def read_file(cls) -> [str]:
+        with open(cls.__filename__) as f:
+            return f.read().splitlines()
 
     @classmethod
     @abstractmethod
@@ -42,7 +50,7 @@ class SolutionMeta(Generic[T], ABCMeta):
 
     @classmethod
     @abstractmethod
-    def read_input(cls) -> T:
+    def read_input(cls, lines: [str]) -> T:
         ...
 
 
