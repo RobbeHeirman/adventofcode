@@ -5,8 +5,16 @@ T = TypeVar("T")
 
 
 class SolutionMeta(Generic[T], ABCMeta):
-    __day__ = 0
+    """
+    Used for AdventOfCode
+    Metaclass that auto prints solutions 1 and 2 on initializing a class of type SolutionMeta.
+    Use as follows:
+        - implement read_input. solutions functions will be passed return value of this function
+        - implement solution 1
+        - implement solution 2
+        - Run script of class or import somewhere.
 
+    """
     def __new__(cls, name, bases, dct):
         c = super().__new__(cls, name, bases, dct)
         if bases:
@@ -20,7 +28,7 @@ class SolutionMeta(Generic[T], ABCMeta):
         }
         inp = cls.read_input()
         for key, val in solvers.items():
-            print(f"Solution for day {cls.__day__}, part {key} is {val(inp)}")
+            print(f"Solution for {cls.__name__}, part {key} is {val(inp)}")
 
     @classmethod
     @abstractmethod
