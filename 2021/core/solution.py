@@ -15,8 +15,8 @@ class SolutionMeta(Generic[T], ABCMeta):
         - Run script of class or import somewhere.
 
     """
-    def __new__(cls, name, bases, dct):
-        c = super().__new__(cls, name, bases, dct)
+    def __new__(cls, name, bases, *args, **kwargs):
+        c = super().__new__(cls, name, bases, *args, **kwargs)
         if bases:
             cls._print_solution(c)
         return c
