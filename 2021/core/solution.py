@@ -9,10 +9,10 @@ class SolutionMeta(Generic[T], ABCMeta):
     Used for AdventOfCode
     Metaclass that auto prints solutions 1 and 2 on initializing a class of type SolutionMeta.
     Use as follows:
-        - implement read_input. solutions functions will be passed return value of this function
+        - subclass Solution
         - implement solution 1
         - implement solution 2
-        - Run script of class or import somewhere.
+        - Run script of  class or import somewhere.
 
     """
 
@@ -55,4 +55,17 @@ class SolutionMeta(Generic[T], ABCMeta):
 
 
 class Solution(metaclass=SolutionMeta):
-    pass
+    @classmethod
+    @abstractmethod
+    def solution1(cls, inp: T):
+        ...
+
+    @classmethod
+    @abstractmethod
+    def solution2(cls, inp: T):
+        ...
+
+    @classmethod
+    @abstractmethod
+    def read_input(cls, lines: [str]) -> T:
+        ...
