@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABCMeta
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Type
 
 T = TypeVar("T")
 
@@ -13,18 +13,17 @@ class SolutionMeta(Generic[T], ABCMeta):
         - implement solution 1
         - implement solution 2
         - Run script of  class or import somewhere.
-
     """
 
     __filename__ = 'input.txt'
 
-    def __new__(mcs, name, bases, *args, **kwargs):
+    def __new__(mcs: Type["Solution"], name, bases, *args, **kwargs):
         c = super().__new__(mcs, name, bases, *args, **kwargs)
         if bases:
-            mcs._print_solution(c)
+            SolutionMeta._print_solution(c)
         return c
 
-    def _print_solution(cls: "SolutionMeta"):
+    def _print_solution(cls: Type["Solution"]):
         solvers = {
             "1": cls.solution1,
             "2": cls.solution2
@@ -37,21 +36,6 @@ class SolutionMeta(Generic[T], ABCMeta):
     def read_file(cls) -> [str]:
         with open(cls.__filename__) as f:
             return f.read().splitlines()
-
-    @classmethod
-    @abstractmethod
-    def solution1(cls, inp: T):
-        ...
-
-    @classmethod
-    @abstractmethod
-    def solution2(cls, inp: T):
-        ...
-
-    @classmethod
-    @abstractmethod
-    def read_input(cls, lines: [str]) -> T:
-        ...
 
 
 class Solution(metaclass=SolutionMeta):
