@@ -16,7 +16,10 @@ WRITTEN_NUMBERS = [
 ]
 
 
-def replace_number_word_at_i(number_array_index: str, letter_of_word_index: int, input_string: str) -> str:
+def replace_number_word_at_i(number_array_index: int, letter_of_word_index: int, input_string: str) -> str:
+    """
+    Replace a specific word on input_string at position i with the integer char value of input string.
+    """
     i = letter_of_word_index
     k = number_array_index
     letter_word = WRITTEN_NUMBERS[k]
@@ -27,6 +30,10 @@ def replace_number_word_at_i(number_array_index: str, letter_of_word_index: int,
 
 
 def replace_for_number_words_at_i(input_string: str, i: int) -> str:
+    """
+    starting at index i of input string. try to replace number words with their integer vals as char.
+    :return:
+    """
     return functools.reduce(
         lambda accumulate, index: replace_number_word_at_i(index, i, accumulate),
         range(len(WRITTEN_NUMBERS)),
@@ -34,15 +41,25 @@ def replace_for_number_words_at_i(input_string: str, i: int) -> str:
 
 
 def words_to_integers(input_string: str) -> str:
+    """
+    takes a string and replaces all words spelled as integer into it with the integer string literals.
+    """
     return functools.reduce(replace_for_number_words_at_i, range(len(input_string)), input_string)
 
 
 def _to_first_and_last(line: str) -> str:
+    """
+    takes a string and return the first and last integer character concatenated.
+    """
     numbs = list(filter(lambda letter: letter.isdigit(), line))
-    return numbs[0] + numbs[-1]
+    return f"{numbs[0]}{numbs[-1]}"
 
 
-def concatenate_first_and_last(lines: Iterable) -> [str]:
+def concatenate_first_and_last(lines: Iterable[str]) -> [str]:
+    """
+    given an iterable of strings.
+    find the first and the last integer character in the string concatenated.
+    """
     return list(map(_to_first_and_last, lines))
 
 
@@ -60,5 +77,4 @@ class Day1(Solution):
     @classmethod
     def solution2(cls, inp: [str]) -> int:
         replaced_words = map(words_to_integers, inp)
-        concatenated = concatenate_first_and_last(replaced_words)
-        return sum(map(lambda x: int(x), concatenated))
+        return cls.solution1(replaced_words)
