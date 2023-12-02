@@ -40,6 +40,17 @@ def replace_for_number_words_at_i(input_string: str, i: int) -> str:
         input_string)
 
 
+def replace_first_occurence(input_str: str) -> str:
+    indices = map(lambda s: input_str.find(s), input_str)
+
+    word_place = -1
+    min_indice = len(input_str)
+    for i, indice in enumerate(indices):
+        if indice != -1 and indice < min_indice:
+            word_place = i
+            min_indice = indice
+
+
 def words_to_integers(input_string: str) -> str:
     """
     takes a string and replaces all words spelled as integer into it with the integer string literals.
