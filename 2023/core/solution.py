@@ -8,7 +8,7 @@ class _SolutionMeta(ABCMeta):
 
     def __new__(mcs: Type["Solution"], name, bases, *args, **kwargs):
         c = super().__new__(mcs, name, bases, *args, **kwargs)
-        if bases and isinstance(c, Solution):
+        if bases:  # Still implicit that c is a subclass of solution.
             mcs._print_solution(c)
         return c
 
@@ -49,15 +49,14 @@ class Solution(Generic[T], metaclass=_SolutionMeta):
     @classmethod
     @abstractmethod
     def read_input(cls, lines: [str]) -> T:
-        ...
+        pass
 
     @classmethod
     @abstractmethod
     def solution1(cls, inp: T) -> Any:
-        ...
+        pass
 
     @classmethod
     @abstractmethod
     def solution2(cls, inp: T) -> Any:
-        ...
-
+        pass
