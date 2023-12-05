@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import partial
-from itertools import groupby
+from itertools import groupby, chain
 from operator import is_not
 from typing import Union
 
@@ -28,7 +28,7 @@ class Range:
 
         diff_src_target = self.destination - self.source
 
-        if intersect_end >= intersect_start:
+        if intersect_end > intersect_start:
             return Range(
                 intersect_start + diff_src_target,
                 intersect_start,
@@ -52,20 +52,22 @@ class Map:
         except StopIteration:
             return inp
 
-    def map_range_to_dest_ranges(self, in_range: Range):
+    def map_range_to_dest_ranges(self, in_range: Range) -> [Range]:
         intersect_ranges = map(lambda rng: rng.create_range_intersect(in_range), self.ranges)
         intersect_ranges = filter(partial(is_not, None), intersect_ranges)
-        intersect_ranges = list(sorted(intersect_ranges, key=lambda rang: rang.destination))
-
+        intersect_ranges = list(sorted(intersect_ranges, key=lambda rang: -rang.source))
         if not intersect_ranges:
-            return in_range
+            return [in_range]
 
-        # Check missing range at start
-        first_range: Range = intersect_ranges[0]
-        if first_range.source > in_range.source:
-            pass
+        # TODO: Fill in missing begin of range with source range
+
+        # TODO: Fill in gaps with source range
+
+        # TODO: Fill in missing end with source range.
 
         return intersect_ranges
+
+
 @dataclass
 class Input:
     seeds: [int]
@@ -94,9 +96,16 @@ def recursive_map_seeds(current_map: Map, seeds: [int], map_dict: {str, Map}) ->
     return new_seeds
 
 
-class Day5(Solution):
-    __filename__ = "example.txt"
+def recursive_map_seeds_ranges(current_map: Map, seeds: [Range], map_dict: {str, Map}) -> [Range]:
+    seeds = list(seeds)
+    new_seeds = map(lambda seed: current_map.map_range_to_dest_ranges(seed), seeds)
+    new_seeds = chain(*new_seeds)
+    if new_map := map_dict.get(current_map.destination_name, False):
+        return recursive_map_seeds_ranges(new_map, new_seeds, map_dict)
+    return new_seeds
 
+
+class Day5(Solution):
     @classmethod
     def read_input(cls, lines: [str]) -> Input:
         seeds = list(map(int, lines[0].split(":")[1].split()))
@@ -123,5 +132,5 @@ class Day5(Solution):
             lambda i: Range(seeds[i], 0, seeds[i + 1]),
             range(0, len(seeds), 2)
         ))
-        print(in_ranges[0])
-        start_map.map_range_to_dest_ranges(in_ranges[0])
+        seeds = recursive_map_seeds_ranges(start_map, in_ranges, map_dct)
+        return min((map(lambda range: range.destination, seeds)))

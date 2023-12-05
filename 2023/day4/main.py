@@ -43,7 +43,17 @@ def copy_recursive(cards: [Card], original=None) -> [Card]:
     return cards
 
 
+def dynamic(games: list[Card]):
+    count_cards = [1 for _ in range(len(games))]
+    for i, card in enumerate(games):
+        for count_this_game in range(1, card.winning_numbers_count + 1):
+            count_cards[i + count_this_game] += count_cards[i]
+    return sum(count_cards)
+
+
 class Day4(Solution):
+    __filename__ = "example.txt"
+
     @classmethod
     def read_input(cls, lines: [str]) -> [Card]:
         return list(map(string_to_card, lines))
@@ -54,4 +64,4 @@ class Day4(Solution):
 
     @classmethod
     def solution2(cls, inp: [Card]) -> int:
-        return len(copy_recursive(inp))
+        return dynamic(inp)
