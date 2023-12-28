@@ -1,6 +1,8 @@
 import itertools
+import math
 import re
 from dataclasses import dataclass
+from typing import Callable
 
 from core.solution import Solution
 
@@ -34,6 +36,43 @@ def parse_line_to_entry(line: str) -> (str, Entry):
     return key.strip(), entry
 
 
+@dataclass
+class GhostPathInfo:
+    length_to_end: int
+    start_of_cycle: int
+    cycle_length: int
+
+
+def get_ghost_path_info(space: Input, start_room: str, end_condition: Callable[[str], bool]) -> GhostPathInfo:
+    """
+    This discovered that it was completely unnecessary to search for al those stats.
+    """
+    cycler = itertools.cycle(enumerate(space.walk_pattern))
+    cycle = next(cycler)
+
+    counter = 0
+    loc = start_room
+
+    discovered_rooms_movement_ordered = []
+    discovered_rooms_movement_i = set()
+
+    while (loc, cycle[0]) not in discovered_rooms_movement_i:
+        discovered_rooms_movement_ordered.append((loc, cycle[0]))
+        discovered_rooms_movement_i.add((loc, cycle[0]))
+        counter += 1
+
+        loc = space.network[loc][cycle[1]]
+        cycle = next(cycler)
+
+    end_rooms = list(map(lambda tup: end_condition(tup[0]), discovered_rooms_movement_ordered))
+    length_first = end_rooms.index(True)
+    cycle_start = discovered_rooms_movement_ordered.index((loc, cycle[0]))
+    return GhostPathInfo(length_first,
+                         cycle_start,
+                         len(discovered_rooms_movement_ordered) - cycle_start
+                         )
+
+
 class Day8(Solution):
     @classmethod
     def read_input(cls, lines: [str]) -> Input:
@@ -43,23 +82,11 @@ class Day8(Solution):
 
     @classmethod
     def solution1(cls, inp: Input):
-        cycler = itertools.cycle(inp.walk_pattern)
         current_room = "AAA"
-        counter = 0
-        while current_room != "ZZZ":
-            counter += 1
-            current_room = inp.network[current_room][next(cycler)]
-        return counter
+        return get_ghost_path_info(inp, current_room, lambda room: room == "ZZZ").length_to_end
 
     @classmethod
     def solution2(cls, inp: Input):
-        cycler = itertools.cycle(inp.walk_pattern)
         locs = list(filter(lambda ent: ent[2] == "A", inp.network.keys()))
-        counter = 0
-        print(locs)
-        while not all(map(lambda room: room[2] == "Z", locs)):
-            counter += 1
-            direction = next(cycler)
-
-            locs = list(map(lambda room: inp.network[room][direction], locs))
-        return counter
+        lengths = map(lambda room: get_ghost_path_info(inp, room, lambda r: r[2] == "Z").length_to_end, locs)
+        return math.lcm(*lengths)

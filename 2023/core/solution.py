@@ -1,29 +1,12 @@
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod
 from typing import TypeVar, Generic, Type, Any
+
+import core.solution_meta as solution_meta
 
 T = TypeVar("T")
 
 
-class _SolutionMeta(ABCMeta):
-
-    def __new__(mcs: Type["Solution"], name, bases, *args, **kwargs):
-        c = super().__new__(mcs, name, bases, *args, **kwargs)
-        if bases:  # Still implicit that c is a subclass of solution.
-            mcs._print_solution(c)
-        return c
-
-    def _print_solution(cls: Type["Solution"]):
-        solvers = {
-            "1": cls.solution1,
-            "2": cls.solution2
-        }
-        lines = cls.read_file()
-        inp = cls.read_input(lines)
-        for key, val in solvers.items():
-            print(f"Solution for {cls.__name__}, part {key} is {val(inp)}")
-
-
-class Solution(Generic[T], metaclass=_SolutionMeta):
+class Solution(Generic[T], metaclass=solution_meta._SolutionMeta):
     """
     Does some IO boilerplate. basic parsing of input file. Looks for __filename__=input.txt in workdir.
     If you want another __filename__ just overwrite this variable in subclass definition.
