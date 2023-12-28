@@ -1,7 +1,7 @@
 from abc import ABCMeta
 from typing import Type
 
-import core.solution as solution
+import core.python.solution as solution
 
 
 class _SolutionMeta(ABCMeta):

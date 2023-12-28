@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TypeVar, Generic, Type, Any
 
-import core.solution_meta as solution_meta
+import core.python.solution_meta as solution_meta
 
 T = TypeVar("T")
 

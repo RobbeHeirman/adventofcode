@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from functools import cache
 
-import core.parse as parse
-from core.solution import Solution
+import core.python.parse as parse
+from core.python.solution import Solution
 
 
 @dataclass(frozen=True)

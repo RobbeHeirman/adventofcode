@@ -1,6 +1,7 @@
 import functools
-import itertools
 from typing import List, TypeVar, Type
+
+import itertools
 
 import core.parse as parse
 

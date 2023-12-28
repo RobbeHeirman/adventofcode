@@ -1,8 +1,8 @@
 from functools import partial
 from typing import Iterable
 
-from core.parse import to_grouped_lists
-from core.solution import Solution
+from core.python.parse import to_grouped_lists
+from core.python.solution import Solution
 
 MirrorField = list[str]
 
@@ -24,9 +24,7 @@ def recursive_center_check(mirror_field: MirrorField, smudge_count: int, i: int,
 
 
 def check_center(mirror_field: MirrorField, smudge_count, i: int) -> bool:
-    if i + 1 == len(mirror_field):
-        return False
-    return recursive_center_check(mirror_field, smudge_count, i, 0)
+    return False if i + 1 == len(mirror_field) else recursive_center_check(mirror_field, smudge_count, i, 0)
 
 
 def solve_mirror_field(mirror_field: MirrorField, smudge_count) -> int:

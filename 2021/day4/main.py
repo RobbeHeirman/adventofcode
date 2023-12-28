@@ -3,8 +3,8 @@ from collections import namedtuple
 from typing import List, Dict, Any
 
 import core.matrix as matrix
+import core.parse
 import core.solution as solution
-from core import input_parser
 from core.matrix import Matrix
 
 Coordinate = namedtuple("Coordinate", "x y")
@@ -51,7 +51,7 @@ class Day4(solution.Solution):
     @classmethod
     def read_input(cls, in_str: str) -> InputState:
         play_line_str, *matrices_str = in_str
-        plays = input_parser.parse_int_lst(play_line_str, ",")
+        plays = core.parse.parse_int_lst(play_line_str, ",")
         matrices = matrix.create_matrices(matrices_str)
         return InputState(plays, matrices)
 
