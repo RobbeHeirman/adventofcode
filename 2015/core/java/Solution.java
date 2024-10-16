@@ -1,4 +1,4 @@
-package core;
+package core.java;
 
 import java.io.IOException;
 import java.nio.file.Files;

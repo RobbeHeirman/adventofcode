@@ -1,11 +1,11 @@
 package day5;//package day3;
 
-import core.Solution;
+import core.java.Solution;
 
 import java.util.List;
 import java.util.Set;
 
-public class Day3 implements Solution {
+public class Day5 implements Solution {
     Set<Character> VOWELS = Set.of('a', 'e', 'i', 'o', 'u');
 
     boolean containsVowel(String string) {

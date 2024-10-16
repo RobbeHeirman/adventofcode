@@ -1,12 +1,12 @@
 package day2;
 
-import core.Solution;
+import core.java.Solution;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class Day2 implements Solution {
+public class Day4 implements Solution {
     public static String byteToHex(byte num) {
         char[] hexDigits = new char[2];
         hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);

@@ -1,7 +1,8 @@
-package core;
+package core.java;
 
-import day2.Day2;
-import day5.Day3;
+import day2.Day4;
+import day3.Day3;
+import day5.Day5;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,13 +14,14 @@ public class Runner {
        System.out.printf("Answer 2: %s\n", solution.solution2(inp));
     }
     public static void main(String[] args) throws IOException {
-        String day = "day5";
+        String day = "day3";
         Solution solution = switch (day) {
-            case "day2" -> new Day2();
-            case "day5" -> new Day3();
+            case "day3" -> new Day3();
+            case "day4" -> new Day4();
+            case "day5" -> new Day5();
             default -> throw new RuntimeException();
         };
-        String filename = String.format("./src/%s/input.txt", day);
+        String filename = String.format("./2015/%s/input.txt", day);
         System.out.printf("Running %S%n", day);
         runSolution(solution, filename);
     }
