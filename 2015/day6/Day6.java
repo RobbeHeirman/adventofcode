@@ -3,12 +3,13 @@ package day6;
 import core.java.Solution;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 interface ManipulateMatrix<T> {
-    void manipulate(int x, int y,  T[][] matrix);
+    void manipulate(int x, int y, T[][] matrix);
 
     static void turnOnBoolean(int x, int y, Boolean[][] matrix) {
         matrix[x][y] = true;
@@ -66,13 +67,10 @@ public class Day6 implements Solution {
         };
 
         runSolution(instructions, matrix, factory);
-        int counter = 0;
-        for (Boolean[] booleans : matrix) {
-            for (boolean aBoolean : booleans) {
-                counter += aBoolean ? 1 : 0;
-            }
-        }
-        return counter;
+        return Arrays.stream(matrix)
+                .flatMap(Arrays::stream)
+                .filter(Boolean::booleanValue)
+                .count();
     }
 
     @Override
@@ -86,13 +84,9 @@ public class Day6 implements Solution {
         };
 
         runSolution(instructions, matrix, factory);
-        int counter = 0;
-        for (Integer[] integers : matrix) {
-            for (Integer integer : integers) {
-                counter += integer;
-            }
-        }
-        return counter;
+        return Arrays.stream(matrix)
+                .flatMap(Arrays::stream)
+                .reduce(0, Integer::sum);
     }
 
 
@@ -147,7 +141,7 @@ public class Day6 implements Solution {
         return matrix;
     }
 
-    private static <T> void iterateMatrix(Instruction instruction, T [][] matrix, ManipulateMatrix<T> manipulate) {
+    private static <T> void iterateMatrix(Instruction instruction, T[][] matrix, ManipulateMatrix<T> manipulate) {
         for (int i = instruction.startPoint().x; i <= instruction.endPoint().x; i++) {
             for (int j = instruction.startPoint().y; j <= instruction.endPoint().y; j++) {
                 manipulate.manipulate(i, j, matrix);
