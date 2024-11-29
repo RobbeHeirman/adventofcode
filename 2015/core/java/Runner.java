@@ -4,6 +4,8 @@ import day2.Day4;
 import day3.Day3;
 import day5.Day5;
 import day6.Day6;
+import day8.Day8;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -14,12 +16,13 @@ public class Runner {
        System.out.printf("Answer 2: %s\n", solution.solution2(inp));
     }
     public static void main(String[] args) throws IOException {
-        String day = "day6";
+        String day = "day8";
         Solution solution = switch (day) {
             case "day3" -> new Day3();
             case "day4" -> new Day4();
             case "day5" -> new Day5();
             case "day6" -> new Day6();
+            case "day8" -> new Day8();
 
             default -> throw new RuntimeException();
         };
