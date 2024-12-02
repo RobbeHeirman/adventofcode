@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass
 from typing import Callable
 
-from core.solution import Solution
+from core import Solution
 
 CAPITALS_REGEX = re.compile(r"([0-9A-Z]+)")
 

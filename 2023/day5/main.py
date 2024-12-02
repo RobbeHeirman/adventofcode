@@ -4,7 +4,7 @@ from itertools import groupby, chain
 from operator import is_not
 from typing import Union
 
-from core.solution import Solution
+from core import Solution
 
 
 @dataclass

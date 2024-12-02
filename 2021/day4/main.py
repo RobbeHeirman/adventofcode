@@ -2,10 +2,10 @@ import dataclasses
 from collections import namedtuple
 from typing import List, Dict, Any
 
-import core.matrix as matrix
-import core.parse
-import core.solution as solution
-from core.matrix import Matrix
+import core as matrix
+import core
+import core as solution
+from core import Matrix
 
 Coordinate = namedtuple("Coordinate", "x y")
 

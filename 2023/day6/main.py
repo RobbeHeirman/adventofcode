@@ -2,7 +2,7 @@ import math
 from dataclasses import dataclass
 from functools import reduce
 
-from core.solution import Solution
+from core import Solution
 
 
 @dataclass

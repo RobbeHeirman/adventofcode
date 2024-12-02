@@ -1,8 +1,8 @@
 import functools
 from typing import Callable
 
-from core.parse import to_int_list
-from core.solution import Solution
+from core import to_int_list
+from core import Solution
 
 
 def difference_lines(line: [int]) -> [[int]]:

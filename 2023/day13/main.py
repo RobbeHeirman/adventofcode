@@ -1,8 +1,8 @@
 from functools import partial
 from typing import Iterable
 
-from core.python.parse import to_grouped_lists
-from core.python.solution import Solution
+from core import to_grouped_lists
+from core import Solution
 
 MirrorField = list[str]
 

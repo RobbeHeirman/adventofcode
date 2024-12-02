@@ -4,7 +4,7 @@ import itertools
 import re
 from typing import Iterable, Tuple, List
 
-from core.solution import Solution
+from core import Solution
 
 N_LOCS = list(filter(lambda tup: tup != (0, 0), itertools.product([-1, 0, 1], repeat=2)))
 SPLIT_REGEX = re.compile(r'(\d+|[^0-9])')

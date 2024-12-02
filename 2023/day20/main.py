@@ -9,8 +9,8 @@ from operator import eq
 from queue import Queue
 from typing import Any
 
-from core.functional import foreach
-from core.solution import Solution, T
+from core import foreach
+from core import Solution
 
 
 class Signal(Enum):

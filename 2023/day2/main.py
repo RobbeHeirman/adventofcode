@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from functools import reduce
 
-import core.solution as solution
+import core as solution
 
 MAX_VALS = {
     "red": 12,

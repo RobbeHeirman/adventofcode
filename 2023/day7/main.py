@@ -3,7 +3,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import ClassVar, TypeVar, Type, Iterable
 
-from core.solution import Solution
+from core import Solution
 
 card_count = namedtuple("card_count", "card count")
 

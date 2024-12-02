@@ -1,7 +1,7 @@
 from collections import namedtuple
 from enum import Enum
 
-from core.python.solution import Solution
+from core import Solution
 
 Coordinate = namedtuple("coordinate", "i j")
 

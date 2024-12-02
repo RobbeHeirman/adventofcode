@@ -1,7 +1,7 @@
 import functools
 from typing import Iterable
 
-from core.solution import Solution
+from core import Solution
 
 WRITTEN_NUMBERS = [
     "one",

@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Iterable
+from typing import Any
 
-from core.solution import Solution, T
+from core import Solution, T
 
 
 @dataclass

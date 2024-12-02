@@ -1,6 +1,6 @@
 import itertools
 from dataclasses import dataclass
-from core.solution import Solution
+from core import Solution
 
 
 @dataclass(frozen=True)

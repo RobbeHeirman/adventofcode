@@ -3,7 +3,7 @@ from typing import List, TypeVar, Type
 
 import itertools
 
-import core.parse as parse
+import core as parse
 
 
 class Matrix:
