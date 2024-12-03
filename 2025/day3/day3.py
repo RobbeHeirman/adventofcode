@@ -1,7 +1,8 @@
-from typing import Any
 import re
-from core.python.solution import Solution, T
 
+from core.python.solution import Solution
+
+MUL_PATTERN = r"mul\((\d{1,3}),(\d{1,3})\)"
 
 class Day3(Solution):
     @classmethod
@@ -10,13 +11,13 @@ class Day3(Solution):
 
     @classmethod
     def solution1(cls, inp: str) -> int:
-        return sum(int(x[0]) * int(x[1]) for x in re.findall(r"mul\((\d{1,3}),(\d{1,3})\)", inp))
+        return sum(int(x[0]) * int(x[1]) for x in re.findall(MUL_PATTERN, inp))
 
     @classmethod
     def solution2(cls, inp: str) -> int:
         enabled = True
         total = 0
-        for a, b, do, dont in re.findall(r"mul\((\d+),(\d+)\)|(do\(\))|(don't\(\))", inp):
+        for a, b, do, dont in re.findall(MUL_PATTERN+ r"|(do\(\))|(don't\(\))", inp):
             if do:
                 enabled = True
             elif dont:
