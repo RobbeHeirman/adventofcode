@@ -19,3 +19,4 @@ class Day1(core.python.solution.Solution):
     def solution2(cls, digits: list[int]) -> int:
         halfway = len(digits) // 2
         return sum_matching_look_ahead(digits, halfway)
+
