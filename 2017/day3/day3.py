@@ -1,8 +1,6 @@
 import dataclasses
-from typing import Any
 
 import core.python.solution as solution
-from core.python.solution import T
 
 DIRECTIONS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 DIRECTIONS_DIAGONALS = DIRECTIONS + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -43,21 +41,20 @@ class Day1(solution.Solution):
         return int(lines[0])
 
     @classmethod
-    def solution1(cls, inp: int) -> Any:
+    def solution1(cls, inp: int) -> int:
         state = State()
-        for i in range(1, inp + 1):
-            if inp == i:
-                return abs(state.coordinate_at[0]) + abs(state.coordinate_at[1])
+        for i in range(inp - 1):
             state.update()
+        return abs(state.coordinate_at[0]) + abs(state.coordinate_at[1])
 
     @classmethod
-    def solution2(cls, inp: T) -> Any:
+    def solution2(cls, inp: int) -> int:
         state = State()
         coordinate_vals = {(0, 0): 1}
         while True:
             state.update()
-            check_dirs = [add_tuples(state.coordinate_at, dr) for dr in DIRECTIONS_DIAGONALS]
-            new_val = sum(map(lambda coord: coordinate_vals.get(coord, 0), check_dirs))
+            check_directions = [add_tuples(state.coordinate_at, dr) for dr in DIRECTIONS_DIAGONALS]
+            new_val = sum(map(lambda coord: coordinate_vals.get(coord, 0), check_directions))
             if new_val > inp:
                 return new_val
             coordinate_vals[state.coordinate_at] = new_val
