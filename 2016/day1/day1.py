@@ -16,7 +16,7 @@ class State:
         movement = int(direction[1:])
         self.facing = rotate(self.facing, rotation)
         result = [(self.pos[0] + self.facing[0] * i, self.pos[1] + self.facing[1] * i) for i in range(1, movement + 1)]
-        self.pos = (self.pos[0] + self.facing[0] * movement, self.pos[1] + self.facing[1] * movement)
+        self.pos = result[-1]
         return result
 
     def distance(self) -> int:
@@ -37,18 +37,18 @@ def rotate(current_direction: tuple[int, int], direction: str) -> tuple[int, int
 class Day1(Solution):
 
     @classmethod
-    def read_input(cls, lines: [str]) -> list[str]:
+    def read_input(cls, lines: list[str]) -> list[str]:
         return lines[0].split(", ")
 
     @classmethod
-    def solution1(cls, inp: T) -> Any:
+    def solution1(cls, inp: list[str]) -> int:
         state = State()
         for direction in inp:
             state.update(direction)
         return state.distance()
 
     @classmethod
-    def solution2(cls, inp: T) -> Any:
+    def solution2(cls, inp: list[str]) -> int:
         state = State()
         visited_pos = {(0, 0)}
         for direction in inp:

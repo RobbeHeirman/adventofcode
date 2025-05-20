@@ -31,7 +31,7 @@ class Solution(Generic[T], metaclass=solution_meta._SolutionMeta):
 
     @classmethod
     @abstractmethod
-    def read_input(cls, lines: [str]) -> T:
+    def read_input(cls, lines: list[str]) -> T:
         pass
 
     @classmethod
