@@ -1,7 +1,6 @@
 import dataclasses
-from typing import Any
 
-from core.python.solution import Solution, T
+from core.python.solution import Solution
 
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
@@ -30,7 +29,6 @@ def rotate(current_direction: tuple[int, int], direction: str) -> tuple[int, int
         i = len(DIRECTIONS) - 1
     elif i == len(DIRECTIONS):
         i = 0
-
     return DIRECTIONS[i]
 
 
