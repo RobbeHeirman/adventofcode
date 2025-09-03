@@ -20,4 +20,4 @@ class _SolutionMeta(ABCMeta):
         lines = cls.read_file()
         inp = cls.read_input(lines)
         for key, val in solvers.items():
-            print(f"Solution for {cls.__name__}, part {key} is {val(inp[:])}")
+            print(f"Solution for {cls.__name__}, part {key} is {val(inp)}")
