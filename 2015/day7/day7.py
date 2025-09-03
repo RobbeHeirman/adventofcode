@@ -84,13 +84,14 @@ class Day7(Solution):
                 wires[wire] = TwoOperationSignal(s1, s2, shift_left)
             elif keyword == "RSHIFT":
                 wires[wire] = TwoOperationSignal(s1, s2, shift_right)
-        print(type(wires))
         return wires
 
     @classmethod
-    def solution1(cls, wires: dict[str, Signal]) -> Any:
+    def solution1(cls, wires: dict[str, Signal]) -> int:
         return wires["a"].get_signal(wires)
 
     @classmethod
-    def solution2(cls, inp: T) -> Any:
-        return "?"
+    def solution2(cls, wires: dict[str, Signal]) -> int:
+        # Changed input of b to output of a
+        return wires["a"].get_signal(wires)
+
